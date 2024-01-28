@@ -108,7 +108,7 @@ def login_view(request):
                 texttospeech("You meant " + addr + " say yes to confirm or no to enter again", file + i)
                 i = i + str(1)
                 say = speechtotext(3)
-                if say == 'yes' or say == 'Yes':
+                if say == 'yes' or say == 'Yes' or say =='s' or say=='S' or say =='es':
                     flag = False
             else:
                 texttospeech("could not understand what you meant:", file + i)
@@ -120,26 +120,27 @@ def login_view(request):
         print(addr)
         request.email = addr
 
-        flag = True
-        while (flag):
-            texttospeech("Enter your password", file + i)
-            i = i + str(1)
-            passwrd = speechtotext(10)
+       # flag = True
+        # while (flag):
+        #     texttospeech("Enter your password", file + i)
+        #     i = i + str(1)
+        #     passwrd = speechtotext(10)
             
-            if addr != 'N':
-                texttospeech("You meant " + passwrd + " say yes to confirm or no to enter again", file + i)
-                i = i + str(1)
-                say = speechtotext(3)
-                if say == 'yes' or say == 'Yes':
-                    flag = False
-            else:
-                texttospeech("could not understand what you meant:", file + i)
-                i = i + str(1)
-        passwrd = passwrd.strip()
-        passwrd = passwrd.replace(' ', '')
-        passwrd = passwrd.lower()
-        passwrd = convert_special_char(passwrd)
-        print(passwrd)
+        #     if addr != 'N':
+        #         texttospeech("You meant " + passwrd + " say yes to confirm or no to enter again", file + i)
+        #         i = i + str(1)
+        #         say = speechtotext(3)
+        #         if say == 'yes' or say == 'Yes':
+        #             flag = False
+        #     else:
+        #         texttospeech("could not understand what you meant:", file + i)
+        #         i = i + str(1)
+        # passwrd = passwrd.strip()
+        # passwrd = passwrd.replace(' ', '')
+        # passwrd = passwrd.lower()
+        # passwrd = convert_special_char(passwrd)
+        # print(passwrd)
+        passwrd='fwyaviwkrtznhooo'
 
         imap_url = 'imap.gmail.com'
         #passwrd = ''
@@ -169,24 +170,24 @@ def options_view(request):
         texttospeech("You are logged into your account. What would you like to do ?", file + i)
         i = i + str(1)
         while(flag):
-            texttospeech("To compose an email say compose. To open Inbox folder say Inbox. To open Sent folder say Sent. To open Trash folder say Trash. To Logout say Logout. Do you want me to repeat?", file + i)
+            texttospeech("Say 1 to compose an email. 2 Inbox folder. 3 Sent folder.  4 Trash folder. 5 Logout. Do you want me to repeat?", file + i)
             i = i + str(1)
             say = speechtotext(3)
-            if say == 'No' or say == 'no':
+            if say == 'No' or say == 'no' or say=='noo' or say=='nyo':
                 flag = False
         texttospeech("Enter your desired action", file + i)
         i = i + str(1)
         act = speechtotext(5)
         act = act.lower()
-        if act == 'compose':
+        if act == '1'or act== 'one' or act=='won':
             return JsonResponse({'result' : 'compose'})
-        elif act == 'inbox':
+        elif act == '2' :
             return JsonResponse({'result' : 'inbox'})
-        elif act == 'sent':
+        elif act == '3' or act=='three' or act=='tree' or act=='ree':
             return JsonResponse({'result' : 'sent'})
-        elif act == 'trash':
+        elif act == '4':
             return JsonResponse({'result' : 'trash'})
-        elif act == 'log out':
+        elif act == '5':
             addr = ""
             passwrd = ""
             texttospeech("You have been logged out of your account and now will be redirected back to the login page.",file + i)
@@ -220,7 +221,7 @@ def compose_view(request):
                     texttospeech("You meant " + to + " say yes to confirm or no to enter again", file + i)
                     i = i + str(1)
                     say = speechtotext(5)
-                    if say == 'yes' or say == 'Yes':
+                    if say == 'yes' or say == 'Yes' or say=='s' or say=='S' or say=='es':
                         toaddr.append(to)
                         flag = False
                 else:
@@ -285,7 +286,7 @@ def compose_view(request):
                 filename = filename + '.mp3'
                 filename = filename.replace(' ', '')
                 print(filename)
-                texttospeech("Enter your audio message.", file + i)
+                texttospeech("Speak your audio message.", file + i)
                 i = i + str(1)
                 audio_msg = speechtotext(10)
                 flagconf = True
@@ -556,7 +557,7 @@ def read_mails(mail_list,folder):
             ans = speechtotext(3)
             ans = ans.lower()
             print(ans)
-            if ans == "yes":
+            if ans == "yes" or ans == "s" or ans == "YES" or ans == "S" or ans == "YEE" or ans == "YESS" or ans == "SS":
                 try:
                     conn.store(data, '+FLAGS', '\\Deleted')
                     conn.expunge()
@@ -566,7 +567,23 @@ def read_mails(mail_list,folder):
                 except:
                     texttospeech("Sorry, could not delete this mail. Please try again later.", file + i)
                     i = i + str(1)
-
+        
+        texttospeech("Do you want to restore this mail? Say yes or no. ", file + i)
+        i = i + str(1)
+        ans = speechtotext(3)
+        ans = ans.lower()
+        print(ans)
+        if ans == "yes" or ans == "YES" or ans == "s" or ans == "S" or ans == "YYES" or ans == "yess" or ans == "YEE":
+            try:
+                conn.copy(data, 'INBOX')  # copy to inbox
+                conn.store(data, '+FLAGS', '\\DELETED') #Mark as deleted
+                texttospeech("The mail has been restored.", file + i)
+                i = i + str(1)
+                conn.expunge()
+                print("mail restored")
+            except:
+                texttospeech("Sorry, could not restore this mail. Please try again later.", file + i)
+                i = i + str(1)               
         texttospeech("Email ends here.", file + i)
         i = i + str(1)
         texttospeech("Do you want to read more mails?", file + i)
@@ -668,7 +685,6 @@ def inbox_view(request):
 
     elif request.method == 'GET':
         return render(request, 'homepage/inbox.html')
-
 def sent_view(request):
     global i, addr, passwrd, conn
     if request.method == 'POST':
@@ -692,7 +708,8 @@ def sent_view(request):
                 while True:
                     texttospeech("Enter email ID of receiver.", file + i)
                     i = i + str(1)
-                    emailid = speechtotext(15)
+                    emailid = speechtotext(20)
+                    
                     texttospeech("You meant " + emailid + " say yes to confirm or no to enter again", file + i)
                     i = i + str(1)
                     yn = speechtotext(5)
@@ -746,8 +763,8 @@ def trash_view(request):
         conn.login(addr, passwrd)
         conn.select('"[Gmail]/Trash"')
         result1, data1 = conn.search(None, "ALL")
-        mail_list = data1[0].split()
-        text = "You have reached your trash folder. You have " + str(len(mail_list)) + " mails in your trash folder. To search a specific email say search. To go back to the menu page say back. To logout say logout."
+        mail_list = len(data1[0].split())
+        text = "You have reached your trash folder. You have " + str(mail_list) + " mails in your trash folder. To search a specific email say search. To go back to the menu page say back. To logout say logout."
         texttospeech(text, file + i)
         i = i + str(1)
         flag = True
@@ -755,7 +772,7 @@ def trash_view(request):
             act = speechtotext(5)
             act = act.lower()
             print(act)
-            if act == 'search':
+            if act == 'search'  or act == 'serch' or act == 'ser' or act == 'se' or act == 'sarch' or act == 'seach' or act == 'sach' or act == 'sech':
                 flag = False
                 emailid = ""
                 while True:
