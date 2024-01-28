@@ -140,7 +140,7 @@ def login_view(request):
         # passwrd = passwrd.lower()
         # passwrd = convert_special_char(passwrd)
         # print(passwrd)
-        passwrd='fwyaviwkrtznhooo'
+        #passwrd='fwyaviwkrtznhooo'
 
         imap_url = 'imap.gmail.com'
         #passwrd = ''
